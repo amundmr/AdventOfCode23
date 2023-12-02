@@ -10,80 +10,54 @@ pub fn day2() {
     let splitlines: Vec<_> = contents.lines().collect();
     //println!("{:?}", splitlines);
 
-    let mut pts: i32 = 0;
+    let mut game_sum: u32 = 0;
+    let max_red: u32 = 12;
+    let max_green: u32 = 13;
+    let max_blue: u32 = 14;
 
     for n in 0..splitlines.len() {
-        let opt: Vec<&str> = splitlines[n].split_whitespace().collect();
-        println!("Opponent: {}, Me: {}", opt[0], opt[1]);
+         let mut possible_game: bool = true;
 
-        
-        let me_pts:i32 = match opt[1] {
-            "X" => 1, //Rock
-            "Y" => 2, //Paper
-            "Z" => 3, //Scissors
-            _ => 0
-        };
-        let win_pts:i32 = match (opt[0], opt[1]) {
-            ("A", "Y") => 6,
-            ("B", "Z") => 6,
-            ("C", "X") => 6,
-            ("A", "X") => 3,
-            ("B", "Y") => 3,
-            ("C", "Z") => 3,
-            _ => 0
-        };
-        
-        /*
-        Winning combinations
-        "A":"Y",
-        "B":"Z",
-        "C":"X"
-           
-        Draw combinations:
-        "A":"X",
-        "B":"Y",
-        "C":"Z"
+        // Get game ID
+        let game_vec: Vec<&str> = splitlines[n].split(":").collect();
+        let game_id_vec:Vec<&str> = game_vec[0].split(" ").collect();
+        let game_id: u32 = game_id_vec[1].parse::<u32>().unwrap();
+        println!("game_id: {}", game_id);
 
-        Loss combinations: All else
-*/
+        // Loop over the sets in the game
+        let sets_vec: Vec<&str> = game_vec[1].split(";").collect();
+        for set in sets_vec.iter() {
+            // Loop over the cubes in the set
+            let cube_vec: Vec<&str> = set.split(",").collect();
+            println!("-");
 
-        let round_pts: i32 = me_pts + win_pts;
-        println!("me_pts={}, win_pts = {}, round_pts={}",me_pts, win_pts, round_pts);
-        pts += round_pts;
+            let mut red_num: u32 = 0;
+            let mut green_num: u32 = 0;
+            let mut blue_num: u32 = 0;
+            for cube in cube_vec.iter() {
+                // Check if the cube strin contains
+                let cube_clean = cube.trim();
+                println!("{}", cube_clean);
+                if cube_clean.contains("red") {
+                    red_num = cube_clean.split(" ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
+                    println!("red_num: {}", red_num);
+                } else if cube_clean.contains("green") {
+                    green_num= cube_clean.split(" ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
+                    println!("green_num: {}", green_num);
+                } else if cube_clean.contains("blue") {
+                    blue_num = cube_clean.split(" ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
+                    println!("blue_num: {}", blue_num);
+                }
+            }
 
+            if red_num > max_red  || green_num > max_green || blue_num > max_blue{
+                possible_game = false
+            }
+            
+        }
+        if possible_game {
+            game_sum += game_id;
+        }
     }
-    //let mut maxval: i32 = 1;
-    println!("My total points count is: {}", pts);
-    // Part TWO!
-    let mut pts2: i32 = 0;
-
-    for n in 0..splitlines.len() {
-        let opt: Vec<&str> = splitlines[n].split_whitespace().collect();
-        println!("Opponent: {}, Me: {}", opt[0], opt[1]);
-        
-        let win_pts:i32 = match opt[1] {
-            "X" => 0,
-            "Y" => 3,
-            "Z" => 6,
-            _ => 0
-        };
-
-        let me_pts:i32 = match (opt[0], opt[1]) {
-            ("A", "X") => 3, //scirrors (3) loses to rock(A) and cause a loss (X)
-            ("A", "Y") => 1,
-            ("A", "Z") => 2,
-            ("B", "X") => 1,
-            ("B", "Y") => 2,
-            ("B", "Z") => 3,
-            ("C", "X") => 2,
-            ("C", "Y") => 3,
-            ("C", "Z") => 1,
-            _ => 0
-        };
-        pts2 += win_pts;
-        pts2 += me_pts;
-
-    }
-    println!("Part 2 pts: {}", pts2);
-
+    println!("Sum of possible game IDs: {}", game_sum);
 }
