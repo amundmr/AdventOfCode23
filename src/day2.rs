@@ -11,6 +11,7 @@ pub fn day2() {
     //println!("{:?}", splitlines);
 
     let mut game_sum: u32 = 0;
+    let mut power: u32 = 0;
     let max_red: u32 = 12;
     let max_green: u32 = 13;
     let max_blue: u32 = 14;
@@ -26,6 +27,9 @@ pub fn day2() {
 
         // Loop over the sets in the game
         let sets_vec: Vec<&str> = game_vec[1].split(";").collect();
+        let mut game_max_red: u32 = 0;
+        let mut game_max_green: u32 = 0;
+        let mut game_max_blue: u32 = 0;
         for set in sets_vec.iter() {
             // Loop over the cubes in the set
             let cube_vec: Vec<&str> = set.split(",").collect();
@@ -41,12 +45,21 @@ pub fn day2() {
                 if cube_clean.contains("red") {
                     red_num = cube_clean.split(" ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
                     println!("red_num: {}", red_num);
+                    if red_num > game_max_red {
+                        game_max_red = red_num;
+                    }
                 } else if cube_clean.contains("green") {
                     green_num= cube_clean.split(" ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
                     println!("green_num: {}", green_num);
+                    if green_num > game_max_green {
+                        game_max_green = green_num;
+                    }
                 } else if cube_clean.contains("blue") {
                     blue_num = cube_clean.split(" ").collect::<Vec<&str>>()[0].parse::<u32>().unwrap();
                     println!("blue_num: {}", blue_num);
+                    if blue_num > game_max_blue {
+                        game_max_blue = blue_num;
+                    }
                 }
             }
 
@@ -58,6 +71,9 @@ pub fn day2() {
         if possible_game {
             game_sum += game_id;
         }
+        let game_power: u32 = game_max_red*game_max_green*game_max_blue;
+        power += game_power;
     }
     println!("Sum of possible game IDs: {}", game_sum);
+    println!("Total power: {}", power);
 }
